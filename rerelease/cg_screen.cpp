@@ -28,6 +28,7 @@ static cvar_t *cl_notifytime;
 static cvar_t *scr_maxlines;
 static cvar_t *ui_acc_contrast;
 static cvar_t* ui_acc_alttypeface;
+static cvar_t* scr_showspeed;
 
 // static temp data used for hud
 static struct
@@ -1745,6 +1746,12 @@ void CG_DrawHUD (int32_t isplit, const cg_server_data_t *data, vrect_t hud_vrect
     // inventory too
     if (ps->stats[STAT_LAYOUTS] & LAYOUTS_INVENTORY)
         CG_DrawInventory(ps, data->inventory, hud_vrect, scale);
+
+    // speedometer    
+    if (scr_showspeed->integer)
+    {        
+        cgi.SCR_DrawFontString(G_Fmt("{:.0f}", vec3_t{ ps->pmove.velocity.x, ps->pmove.velocity.y, 0.f }.length()).data(), (hud_vrect.width * 0.496f) * scale, (hud_vrect.height * 0.54f) * scale, scale, rgba_green, true, text_align_t::LEFT);
+    }
 }
 
 /*
@@ -1776,6 +1783,7 @@ void CG_InitScreen()
     scr_maxlines    = cgi.cvar ("scr_maxlines", "4",      CVAR_ARCHIVE);
     ui_acc_contrast = cgi.cvar ("ui_acc_contrast", "0",   CVAR_NOFLAGS);
     ui_acc_alttypeface = cgi.cvar("ui_acc_alttypeface", "0", CVAR_NOFLAGS);
+    scr_showspeed = cgi.cvar("scr_showspeed", "0", CVAR_NOFLAGS);
 
     hud_data = {};
 }
